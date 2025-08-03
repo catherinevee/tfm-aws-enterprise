@@ -13,6 +13,58 @@ This module provides a complete enterprise infrastructure solution including:
 - **VPC Endpoints**: Private connectivity to AWS services
 - **Advanced Networking**: IPv6 support, custom DNS settings, and flexible subnet configurations
 
+## Resource Map
+
+### Core Infrastructure Components
+- **VPC Resources**
+  - Main VPC (`aws_vpc.main`)
+    - DNS Hostnames & Support
+    - IPv6 Support (optional)
+    - Custom CIDR Blocks
+  - Production VPC (`aws_vpc.production`)
+  - Development VPC (`aws_vpc.development`)
+  - Custom Tags
+  
+- **Networking Components**
+  - Internet Gateways
+  - NAT Gateways
+  - Route Tables
+  - Network ACLs
+  - Security Groups
+  - VPC Endpoints
+  
+- **High Availability**
+  - Multi-AZ Deployment
+  - Region-specific Resources
+  - Redundant NAT Gateways
+  
+- **Security & Compliance**
+  - IAM Roles & Policies
+  - KMS Encryption Keys
+  - Network ACLs
+  - Security Groups
+  - VPC Flow Logs
+  
+- **Monitoring & Operations**
+  - CloudWatch Logs
+  - Flow Logs
+  - Metrics & Alarms
+  - SNS Topics
+
+### Resource Dependencies
+```mermaid
+graph TB
+    VPC[VPC] --> IGW[Internet Gateway]
+    VPC --> NACL[Network ACLs]
+    VPC --> SG[Security Groups]
+    VPC --> RT[Route Tables]
+    VPC --> VPCE[VPC Endpoints]
+    VPC --> NATGW[NAT Gateways]
+    VPC --> FL[Flow Logs]
+    FL --> CWL[CloudWatch Logs]
+    FL --> IAM[IAM Roles]
+```
+
 ## 🚀 Features
 
 ### Multi-VPC Architecture
