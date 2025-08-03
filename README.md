@@ -1,58 +1,62 @@
-# AWS Enterprise Multi-VPC Infrastructure Module
+# AWS Enterprise Multi-VPC Infrastructure Terraform Module
 
-A comprehensive Terraform module for creating enterprise-grade AWS infrastructure with multiple VPCs, Transit Gateway connectivity, Site-to-Site VPN, load balancers, and VPC endpoints.
+A comprehensive Terraform module for deploying enterprise-grade multi-VPC AWS infrastructure with Transit Gateway connectivity, VPN connections, load balancers, and VPC endpoints.
 
 ## 🏗️ Architecture Overview
 
-This module creates a complete enterprise networking infrastructure with the following components:
+This module provides a complete enterprise infrastructure solution including:
 
-- **Multi-VPC Architecture**: Main, Production, and Development VPCs
-- **Transit Gateway**: Centralized VPC connectivity and routing
-- **Site-to-Site VPN**: Hybrid connectivity to on-premises networks
-- **Load Balancers**: Application Load Balancer (ALB) and Network Load Balancer (NLB)
+- **Multi-VPC Architecture**: Separate VPCs for main, production, and development environments
+- **Transit Gateway**: Centralized connectivity hub for all VPCs
+- **VPN Connectivity**: Site-to-Site VPN connections for hybrid cloud
+- **Load Balancing**: Application and Network Load Balancers
 - **VPC Endpoints**: Private connectivity to AWS services
-- **NAT Gateways**: Outbound internet access for private subnets
-- **Security Groups**: Proper network segmentation and security
+- **Advanced Networking**: IPv6 support, custom DNS settings, and flexible subnet configurations
 
-## 📋 Features
+## 🚀 Features
 
-### ✅ Multi-VPC Support
-- Create up to 3 VPCs (Main, Production, Development)
-- Configurable CIDR blocks for each VPC
-- Public and private subnets across multiple availability zones
-- Independent internet gateways and NAT gateways
+### Multi-VPC Architecture
+- ✅ Separate VPCs for main, production, and development environments
+- ✅ Configurable CIDR blocks for each VPC
+- ✅ Advanced DNS and IPv6 support for each VPC
+- ✅ Flexible subnet configurations with public/private subnets
 
-### ✅ Transit Gateway Integration
-- Centralized VPC connectivity
-- Automatic route propagation
-- Shared attachments support
-- Custom route table management
+### Transit Gateway Connectivity
+- ✅ Centralized Transit Gateway for VPC connectivity
+- ✅ Configurable route table association and propagation
+- ✅ Advanced features: DNS support, VPN ECMP, multicast support
+- ✅ Appliance mode and IPv6 support for VPC attachments
 
-### ✅ VPN Connectivity
-- Site-to-Site VPN with customer gateway
-- BGP routing support
-- Static and dynamic routing options
-- High availability with dual tunnels
+### VPN Connectivity
+- ✅ Site-to-Site VPN connections
+- ✅ Configurable BGP ASN and static routes
+- ✅ Customer gateway management
 
-### ✅ Load Balancing
-- Application Load Balancer (ALB) for HTTP/HTTPS traffic
-- Network Load Balancer (NLB) for TCP/UDP traffic
-- Configurable target groups and health checks
-- Internal and external load balancer options
+### Load Balancing
+- ✅ Application Load Balancer (ALB) with health checks
+- ✅ Network Load Balancer (NLB) for TCP/UDP traffic
+- ✅ Configurable internal/external load balancers
+- ✅ Deletion protection and target group settings
 
-### ✅ VPC Endpoints
-- S3 and DynamoDB Gateway endpoints
-- EC2, ECR, and ECR DKR Interface endpoints
-- Private DNS resolution
-- Security group integration
+### VPC Endpoints
+- ✅ S3 and DynamoDB Gateway endpoints
+- ✅ EC2, ECR, and ECR DKR Interface endpoints
+- ✅ Private DNS and security group management
 
-### ✅ Security & Compliance
-- Proper network segmentation
-- Security groups with least-privilege access
-- Resource tagging for cost management
-- Encryption in transit and at rest
+### Advanced Networking
+- ✅ IPv6 support for VPCs and subnets
+- ✅ Custom DNS hostnames and support settings
+- ✅ Flexible public IP assignment policies
+- ✅ NAT Gateway configuration per VPC
 
-## 🚀 Quick Start
+## 📋 Prerequisites
+
+- Terraform >= 1.0
+- AWS Provider >= 5.0
+- AWS CLI configured with appropriate permissions
+- For VPN: Customer gateway IP address and BGP ASN
+
+## 🔧 Usage
 
 ### Basic Usage
 
@@ -61,387 +65,224 @@ module "enterprise_infrastructure" {
   source = "./tfm-aws-enterprise"
 
   environment = "dev"
-  
-  # Enable main VPC only
-  create_main_vpc = true
-  
-  # Enable Transit Gateway
-  create_transit_gateway = true
-  
-  # Enable VPC endpoints
-  create_vpc_endpoints = true
-  
-  # Enable load balancers
-  create_alb = true
-  create_nlb = true
-  
+
+  # VPC Configuration
+  create_main_vpc        = true
+  create_production_vpc  = false
+  create_development_vpc = false
+
+  # Transit Gateway
+  create_transit_gateway = false
+
+  # VPN Configuration
+  create_vpn = false
+
+  # Load Balancers
+  create_alb = false
+  create_nlb = false
+
+  # VPC Endpoints
+  create_vpc_endpoints = false
+
+  # NAT Gateway
+  enable_nat_gateway = true
+
   common_tags = {
     Environment = "dev"
-    Project     = "my-project"
+    Project     = "basic-example"
     Owner       = "devops-team"
-  }
-}
-```
-
-### Advanced Usage
-
-```hcl
-module "enterprise_infrastructure" {
-  source = "./tfm-aws-enterprise"
-
-  environment = "prod"
-  
-  # Create all VPCs
-  create_main_vpc        = true
-  create_production_vpc  = true
-  create_development_vpc = true
-  
-  # Custom CIDR blocks
-  main_vpc_cidr         = "10.0.0.0/16"
-  production_vpc_cidr   = "10.1.0.0/16"
-  development_vpc_cidr  = "10.2.0.0/16"
-  
-  # Custom subnets
-  main_public_subnets  = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  main_private_subnets = ["10.0.11.0/24", "10.0.12.0/24", "10.0.13.0/24"]
-  
-  # Transit Gateway
-  create_transit_gateway = true
-  
-  # VPN Configuration
-  create_vpn              = true
-  customer_gateway_ip     = "203.0.113.1"
-  customer_gateway_bgp_asn = 65000
-  
-  # Load Balancers
-  create_alb = true
-  create_nlb = true
-  
-  alb_internal = false
-  nlb_internal = true
-  
-  # VPC Endpoints
-  create_vpc_endpoints = true
-  
-  # NAT Gateways
-  enable_nat_gateway = true
-  
-  common_tags = {
-    Environment = "production"
-    Project     = "enterprise-app"
-    Owner       = "infrastructure-team"
     CostCenter  = "IT-001"
   }
 }
 ```
 
-## 📖 Input Variables
+### Advanced Configuration
 
-### General Configuration
+This module provides extensive customization options for all resources. Here are some key configuration areas:
 
-| Variable | Description | Type | Default | Required |
-|----------|-------------|------|---------|:--------:|
-| `environment` | Environment name (dev, staging, prod, test) | `string` | `"dev"` | no |
-| `common_tags` | Common tags to apply to all resources | `map(string)` | `{}` | no |
+#### VPC Configuration
+```hcl
+# Main VPC Advanced Settings
+main_vpc_enable_dns_hostnames = true                    # Enable DNS hostnames for instances
+main_vpc_enable_dns_support = true                      # Enable DNS support for the VPC
+main_vpc_assign_generated_ipv6_cidr_block = false       # Assign IPv6 CIDR block
+main_vpc_ipv6_cidr_block = null                        # Custom IPv6 CIDR block
+main_vpc_ipv6_cidr_block_network_border_group = null   # Network border group for IPv6
+```
 
-### VPC Configuration
+#### Subnet Configuration
+```hcl
+# Main VPC Subnet Settings
+main_public_subnet_map_public_ip_on_launch = true       # Auto-assign public IPs to public subnets
+main_public_subnet_assign_ipv6_address_on_creation = false  # Auto-assign IPv6 addresses
+main_public_subnet_ipv6_cidr_blocks = null             # IPv6 CIDR blocks for public subnets
+main_private_subnet_map_public_ip_on_launch = false    # Don't auto-assign public IPs to private subnets
+main_private_subnet_assign_ipv6_address_on_creation = false # Auto-assign IPv6 addresses
+main_private_subnet_ipv6_cidr_blocks = null            # IPv6 CIDR blocks for private subnets
+```
 
-| Variable | Description | Type | Default | Required |
-|----------|-------------|------|---------|:--------:|
-| `create_main_vpc` | Whether to create the main VPC | `bool` | `true` | no |
-| `create_production_vpc` | Whether to create the production VPC | `bool` | `false` | no |
-| `create_development_vpc` | Whether to create the development VPC | `bool` | `false` | no |
-| `main_vpc_cidr` | CIDR block for the main VPC | `string` | `"10.0.0.0/16"` | no |
-| `production_vpc_cidr` | CIDR block for the production VPC | `string` | `"10.1.0.0/16"` | no |
-| `development_vpc_cidr` | CIDR block for the development VPC | `string` | `"10.2.0.0/16"` | no |
+#### Transit Gateway Configuration
+```hcl
+# Transit Gateway Settings
+transit_gateway_default_route_table_association = "enable"  # Enable default route table association
+transit_gateway_default_route_table_propagation = "enable"  # Enable default route table propagation
+transit_gateway_auto_accept_shared_attachments = "enable"   # Auto-accept shared attachments
+transit_gateway_asn = 64512                                # Amazon side ASN
+transit_gateway_dns_support = "enable"                     # Enable DNS support
+transit_gateway_vpn_ecmp_support = "enable"                # Enable VPN ECMP support
+transit_gateway_multicast_support = "disable"              # Enable multicast support
+```
 
-### Subnet Configuration
+#### Load Balancer Configuration
+```hcl
+# Load Balancer Settings
+create_alb = true                                         # Create Application Load Balancer
+create_nlb = true                                         # Create Network Load Balancer
+alb_internal = false                                      # Internet-facing ALB
+nlb_internal = false                                      # Internet-facing NLB
+alb_deletion_protection = false                          # Enable deletion protection for ALB
+nlb_deletion_protection = false                          # Enable deletion protection for NLB
+alb_target_port = 80                                     # Target port for ALB
+nlb_target_port = 80                                     # Target port for NLB
+alb_health_check_path = "/health"                        # Health check path for ALB
+```
 
-| Variable | Description | Type | Default | Required |
-|----------|-------------|------|---------|:--------:|
-| `main_public_subnets` | List of public subnet CIDR blocks for main VPC | `list(string)` | `["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]` | no |
-| `main_private_subnets` | List of private subnet CIDR blocks for main VPC | `list(string)` | `["10.0.11.0/24", "10.0.12.0/24", "10.0.13.0/24"]` | no |
-| `production_public_subnets` | List of public subnet CIDR blocks for production VPC | `list(string)` | `["10.1.1.0/24", "10.1.2.0/24", "10.1.3.0/24"]` | no |
-| `production_private_subnets` | List of private subnet CIDR blocks for production VPC | `list(string)` | `["10.1.11.0/24", "10.1.12.0/24", "10.1.13.0/24"]` | no |
-| `development_public_subnets` | List of public subnet CIDR blocks for development VPC | `list(string)` | `["10.2.1.0/24", "10.2.2.0/24", "10.2.3.0/24"]` | no |
-| `development_private_subnets` | List of private subnet CIDR blocks for development VPC | `list(string)` | `["10.2.11.0/24", "10.2.12.0/24", "10.2.13.0/24"]` | no |
+#### VPN Configuration
+```hcl
+# VPN Settings
+create_vpn = true                                         # Create Site-to-Site VPN connection
+customer_gateway_bgp_asn = 65000                         # BGP ASN for the customer gateway
+customer_gateway_ip = "203.0.113.1"                      # IP address of the customer gateway
+vpn_static_routes_only = true                            # Use static routes only for VPN
+```
 
-### Transit Gateway
+## 📖 Inputs
 
-| Variable | Description | Type | Default | Required |
-|----------|-------------|------|---------|:--------:|
-| `create_transit_gateway` | Whether to create Transit Gateway | `bool` | `true` | no |
+### General Variables
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| environment | Environment name (e.g., dev, staging, prod) | `string` | `"dev"` | no |
+| common_tags | Common tags to apply to all resources | `map(string)` | `{}` | no |
 
-### VPN Configuration
+### VPC Configuration Variables
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| create_main_vpc | Whether to create the main VPC | `bool` | `true` | no |
+| create_production_vpc | Whether to create the production VPC | `bool` | `false` | no |
+| create_development_vpc | Whether to create the development VPC | `bool` | `false` | no |
+| main_vpc_cidr | CIDR block for the main VPC | `string` | `"10.0.0.0/16"` | no |
+| production_vpc_cidr | CIDR block for the production VPC | `string` | `"10.1.0.0/16"` | no |
+| development_vpc_cidr | CIDR block for the development VPC | `string` | `"10.2.0.0/16"` | no |
 
-| Variable | Description | Type | Default | Required |
-|----------|-------------|------|---------|:--------:|
-| `create_vpn` | Whether to create Site-to-Site VPN | `bool` | `false` | no |
-| `customer_gateway_ip` | IP address of the customer gateway | `string` | `""` | no |
-| `customer_gateway_bgp_asn` | BGP ASN for the customer gateway | `number` | `65000` | no |
-| `vpn_static_routes_only` | Whether to use static routes only | `bool` | `true` | no |
+### VPC Advanced Configuration
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| main_vpc_enable_dns_hostnames | Enable DNS hostnames in the main VPC | `bool` | `true` | no |
+| main_vpc_enable_dns_support | Enable DNS support in the main VPC | `bool` | `true` | no |
+| main_vpc_assign_generated_ipv6_cidr_block | Assign generated IPv6 CIDR block to the main VPC | `bool` | `false` | no |
+| main_vpc_ipv6_cidr_block | IPv6 CIDR block for the main VPC | `string` | `null` | no |
+| main_vpc_ipv6_cidr_block_network_border_group | IPv6 CIDR block network border group for the main VPC | `string` | `null` | no |
 
-### Load Balancers
+### Subnet Configuration Variables
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| main_public_subnets | List of public subnet CIDR blocks for main VPC | `list(string)` | `["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]` | no |
+| main_private_subnets | List of private subnet CIDR blocks for main VPC | `list(string)` | `["10.0.10.0/24", "10.0.11.0/24", "10.0.12.0/24"]` | no |
+| production_public_subnets | List of public subnet CIDR blocks for production VPC | `list(string)` | `["10.1.1.0/24", "10.1.2.0/24", "10.1.3.0/24"]` | no |
+| production_private_subnets | List of private subnet CIDR blocks for production VPC | `list(string)` | `["10.1.10.0/24", "10.1.11.0/24", "10.1.12.0/24"]` | no |
+| development_public_subnets | List of public subnet CIDR blocks for development VPC | `list(string)` | `["10.2.1.0/24", "10.2.2.0/24", "10.2.3.0/24"]` | no |
+| development_private_subnets | List of private subnet CIDR blocks for development VPC | `list(string)` | `["10.2.10.0/24", "10.2.11.0/24", "10.2.12.0/24"]` | no |
 
-| Variable | Description | Type | Default | Required |
-|----------|-------------|------|---------|:--------:|
-| `create_alb` | Whether to create Application Load Balancer | `bool` | `false` | no |
-| `create_nlb` | Whether to create Network Load Balancer | `bool` | `false` | no |
-| `alb_internal` | Whether the ALB is internal | `bool` | `false` | no |
-| `nlb_internal` | Whether the NLB is internal | `bool` | `false` | no |
-| `alb_deletion_protection` | Whether to enable ALB deletion protection | `bool` | `false` | no |
-| `nlb_deletion_protection` | Whether to enable NLB deletion protection | `bool` | `false` | no |
-| `alb_target_port` | Target port for ALB target group | `number` | `80` | no |
-| `nlb_target_port` | Target port for NLB target group | `number` | `80` | no |
-| `alb_health_check_path` | Health check path for ALB | `string` | `"/"` | no |
+### Subnet Advanced Configuration
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| main_public_subnet_map_public_ip_on_launch | Map public IP on launch for main VPC public subnets | `bool` | `true` | no |
+| main_public_subnet_assign_ipv6_address_on_creation | Assign IPv6 address on creation for main VPC public subnets | `bool` | `false` | no |
+| main_public_subnet_ipv6_cidr_blocks | IPv6 CIDR blocks for main VPC public subnets | `list(string)` | `null` | no |
+| main_private_subnet_map_public_ip_on_launch | Map public IP on launch for main VPC private subnets | `bool` | `false` | no |
+| main_private_subnet_assign_ipv6_address_on_creation | Assign IPv6 address on creation for main VPC private subnets | `bool` | `false` | no |
+| main_private_subnet_ipv6_cidr_blocks | IPv6 CIDR blocks for main VPC private subnets | `list(string)` | `null` | no |
 
-### VPC Endpoints
+### Transit Gateway Variables
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| create_transit_gateway | Whether to create Transit Gateway for VPC connectivity | `bool` | `true` | no |
+| transit_gateway_default_route_table_association | Enable default route table association for Transit Gateway | `string` | `"enable"` | no |
+| transit_gateway_default_route_table_propagation | Enable default route table propagation for Transit Gateway | `string` | `"enable"` | no |
+| transit_gateway_auto_accept_shared_attachments | Auto-accept shared attachments for Transit Gateway | `string` | `"enable"` | no |
+| transit_gateway_asn | Amazon side ASN for Transit Gateway | `number` | `64512` | no |
+| transit_gateway_dns_support | Enable DNS support for Transit Gateway | `string` | `"enable"` | no |
+| transit_gateway_vpn_ecmp_support | Enable VPN ECMP support for Transit Gateway | `string` | `"enable"` | no |
+| transit_gateway_multicast_support | Enable multicast support for Transit Gateway | `string` | `"disable"` | no |
+| transit_gateway_appliance_mode_support | Enable appliance mode support for Transit Gateway VPC attachments | `string` | `"disable"` | no |
+| transit_gateway_attachment_dns_support | Enable DNS support for Transit Gateway VPC attachments | `string` | `"enable"` | no |
+| transit_gateway_attachment_ipv6_support | Enable IPv6 support for Transit Gateway VPC attachments | `string` | `"disable"` | no |
 
-| Variable | Description | Type | Default | Required |
-|----------|-------------|------|---------|:--------:|
-| `create_vpc_endpoints` | Whether to create VPC endpoints | `bool` | `false` | no |
+### VPN Variables
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| create_vpn | Whether to create Site-to-Site VPN connection | `bool` | `false` | no |
+| customer_gateway_bgp_asn | BGP ASN for the customer gateway | `number` | `65000` | no |
+| customer_gateway_ip | IP address of the customer gateway | `string` | `""` | no |
+| vpn_static_routes_only | Whether to use static routes only for VPN | `bool` | `true` | no |
 
-### NAT Gateway
+### Load Balancer Variables
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| create_alb | Whether to create Application Load Balancer | `bool` | `false` | no |
+| create_nlb | Whether to create Network Load Balancer | `bool` | `false` | no |
+| alb_internal | Whether the ALB is internal (private) | `bool` | `false` | no |
+| nlb_internal | Whether the NLB is internal (private) | `bool` | `false` | no |
+| alb_deletion_protection | Whether to enable deletion protection for ALB | `bool` | `false` | no |
+| nlb_deletion_protection | Whether to enable deletion protection for NLB | `bool` | `false` | no |
+| alb_target_port | Target port for ALB | `number` | `80` | no |
+| nlb_target_port | Target port for NLB | `number` | `80` | no |
+| alb_health_check_path | Health check path for ALB | `string` | `"/health"` | no |
 
-| Variable | Description | Type | Default | Required |
-|----------|-------------|------|---------|:--------:|
-| `enable_nat_gateway` | Whether to enable NAT Gateway | `bool` | `true` | no |
+### VPC Endpoints Variables
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| create_vpc_endpoints | Whether to create VPC endpoints | `bool` | `false` | no |
+
+### NAT Gateway Variables
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| enable_nat_gateway | Whether to enable NAT Gateway for private subnets | `bool` | `true` | no |
 
 ## 📤 Outputs
 
-### VPC Outputs
+| Name | Description |
+|------|-------------|
+| main_vpc_id | ID of the main VPC |
+| main_public_subnet_ids | IDs of the main VPC public subnets |
+| main_private_subnet_ids | IDs of the main VPC private subnets |
+| production_vpc_id | ID of the production VPC |
+| production_public_subnet_ids | IDs of the production VPC public subnets |
+| production_private_subnet_ids | IDs of the production VPC private subnets |
+| development_vpc_id | ID of the development VPC |
+| development_public_subnet_ids | IDs of the development VPC public subnets |
+| development_private_subnet_ids | IDs of the development VPC private subnets |
+| transit_gateway_id | ID of the Transit Gateway |
+| transit_gateway_arn | ARN of the Transit Gateway |
+| vpn_gateway_id | ID of the VPN Gateway |
+| vpn_connection_id | ID of the VPN connection |
+| alb_id | ID of the Application Load Balancer |
+| alb_arn | ARN of the Application Load Balancer |
+| alb_dns_name | DNS name of the Application Load Balancer |
+| nlb_id | ID of the Network Load Balancer |
+| nlb_arn | ARN of the Network Load Balancer |
+| nlb_dns_name | DNS name of the Network Load Balancer |
+| vpc_summary | Summary of VPCs created |
 
-| Output | Description |
-|--------|-------------|
-| `main_vpc_id` | ID of the main VPC |
-| `main_vpc_cidr_block` | CIDR block of the main VPC |
-| `production_vpc_id` | ID of the production VPC |
-| `development_vpc_id` | ID of the development VPC |
+## 🔧 Examples
 
-### Subnet Outputs
+### Basic Example
+See the [basic example](./examples/basic/) for a minimal configuration with essential features enabled.
 
-| Output | Description |
-|--------|-------------|
-| `main_public_subnet_ids` | IDs of the main VPC public subnets |
-| `main_private_subnet_ids` | IDs of the main VPC private subnets |
-| `production_public_subnet_ids` | IDs of the production VPC public subnets |
-| `development_private_subnet_ids` | IDs of the development VPC private subnets |
+### Advanced Example
+See the [advanced example](./examples/advanced/) for a comprehensive configuration with all features enabled.
 
-### Transit Gateway Outputs
-
-| Output | Description |
-|--------|-------------|
-| `transit_gateway_id` | ID of the Transit Gateway |
-| `transit_gateway_arn` | ARN of the Transit Gateway |
-| `main_vpc_tgw_attachment_id` | ID of the main VPC Transit Gateway attachment |
-
-### VPN Outputs
-
-| Output | Description |
-|--------|-------------|
-| `customer_gateway_id` | ID of the Customer Gateway |
-| `vpn_gateway_id` | ID of the VPN Gateway |
-| `vpn_connection_id` | ID of the VPN Connection |
-| `vpn_connection_tunnel1_address` | Tunnel 1 address |
-| `vpn_connection_tunnel2_address` | Tunnel 2 address |
-
-### Load Balancer Outputs
-
-| Output | Description |
-|--------|-------------|
-| `alb_id` | ID of the Application Load Balancer |
-| `alb_dns_name` | DNS name of the ALB |
-| `nlb_id` | ID of the Network Load Balancer |
-| `nlb_dns_name` | DNS name of the NLB |
-| `alb_target_group_arn` | ARN of the ALB target group |
-| `nlb_target_group_arn` | ARN of the NLB target group |
-
-### VPC Endpoints Outputs
-
-| Output | Description |
-|--------|-------------|
-| `s3_vpc_endpoint_id` | ID of the S3 VPC endpoint |
-| `dynamodb_vpc_endpoint_id` | ID of the DynamoDB VPC endpoint |
-| `ec2_vpc_endpoint_id` | ID of the EC2 VPC endpoint |
-| `ecr_vpc_endpoint_id` | ID of the ECR VPC endpoint |
-
-### Summary Outputs
-
-| Output | Description |
-|--------|-------------|
-| `vpc_summary` | Summary of all VPCs created |
-| `load_balancer_summary` | Summary of load balancers created |
-| `connectivity_summary` | Summary of connectivity resources |
-
-## 🔧 Usage Examples
-
-### Example 1: Basic Single VPC
-
-```hcl
-module "basic_infrastructure" {
-  source = "./tfm-aws-enterprise"
-
-  environment = "dev"
-  
-  create_main_vpc = true
-  create_production_vpc = false
-  create_development_vpc = false
-  
-  create_transit_gateway = false
-  create_vpc_endpoints = false
-  create_alb = false
-  create_nlb = false
-  
-  common_tags = {
-    Environment = "dev"
-    Project     = "basic-app"
-  }
-}
-```
-
-### Example 2: Multi-VPC with Transit Gateway
-
-```hcl
-module "multi_vpc_infrastructure" {
-  source = "./tfm-aws-enterprise"
-
-  environment = "prod"
-  
-  # Create all VPCs
-  create_main_vpc        = true
-  create_production_vpc  = true
-  create_development_vpc = true
-  
-  # Transit Gateway for VPC connectivity
-  create_transit_gateway = true
-  
-  # VPC Endpoints for private AWS service access
-  create_vpc_endpoints = true
-  
-  # Load balancers
-  create_alb = true
-  create_nlb = true
-  
-  alb_internal = false
-  nlb_internal = true
-  
-  common_tags = {
-    Environment = "production"
-    Project     = "enterprise-platform"
-    Owner       = "platform-team"
-  }
-}
-```
-
-### Example 3: Hybrid Cloud with VPN
-
-```hcl
-module "hybrid_infrastructure" {
-  source = "./tfm-aws-enterprise"
-
-  environment = "prod"
-  
-  create_main_vpc = true
-  create_transit_gateway = true
-  
-  # VPN Configuration
-  create_vpn = true
-  customer_gateway_ip = "203.0.113.1"
-  customer_gateway_bgp_asn = 65000
-  vpn_static_routes_only = false
-  
-  # Load balancers
-  create_alb = true
-  alb_internal = false
-  
-  # VPC endpoints
-  create_vpc_endpoints = true
-  
-  common_tags = {
-    Environment = "production"
-    Project     = "hybrid-cloud"
-    NetworkType = "hybrid"
-  }
-}
-```
-
-## 🛠️ Requirements
-
-| Name | Version |
-|------|---------|
-| terraform | >= 1.0 |
-| aws | ~> 5.0 |
-
-## 🔒 Security Considerations
-
-### Network Security
-- All VPCs use private subnets for sensitive resources
-- Security groups implement least-privilege access
-- VPC endpoints provide private AWS service access
-- NAT gateways control outbound internet access
-
-### VPN Security
-- Site-to-Site VPN uses IPsec encryption
-- BGP routing for dynamic route updates
-- Dual tunnel configuration for high availability
-- Customer gateway authentication
-
-### Load Balancer Security
-- Security groups restrict access to load balancers
-- Internal load balancers for private applications
-- Health checks ensure only healthy targets receive traffic
-- Deletion protection prevents accidental removal
-
-## 💰 Cost Optimization
-
-### NAT Gateway Costs
-- NAT gateways incur hourly charges and data processing fees
-- Consider using NAT instances for development environments
-- Use VPC endpoints to reduce NAT gateway traffic
-
-### Transit Gateway Costs
-- Transit Gateway has hourly charges and data processing fees
-- VPC attachments have hourly charges
-- Consider VPC peering for simple connectivity needs
-
-### Load Balancer Costs
-- ALB and NLB have hourly charges and data processing fees
-- Use internal load balancers when possible
-- Consider using Application Load Balancer for HTTP/HTTPS traffic only
-
-## 🧪 Testing
-
-### Prerequisites
-- AWS CLI configured with appropriate permissions
-- Terraform >= 1.0 installed
-- Access to AWS account with required permissions
-
-### Running Tests
-
-```bash
-# Initialize Terraform
-terraform init
-
-# Validate configuration
-terraform validate
-
-# Plan deployment
-terraform plan
-
-# Apply configuration
-terraform apply
-
-# Test connectivity
-# - Verify VPC connectivity
-# - Test load balancer health checks
-# - Validate VPN connection (if enabled)
-# - Check VPC endpoint connectivity
-
-# Clean up
-terraform destroy
-```
-
-## 📝 Contributing
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -451,15 +292,8 @@ terraform destroy
 
 ## 📄 License
 
-This module is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🆘 Support
 
-For support and questions:
-- Create an issue in the repository
-- Check the [Terraform documentation](https://www.terraform.io/docs)
-- Review AWS service documentation
-
-## 🔄 Version History
-
-- **v1.0.0**: Initial release with multi-VPC, Transit Gateway, VPN, load balancers, and VPC endpoints
+For support and questions, please open an issue in the GitHub repository.

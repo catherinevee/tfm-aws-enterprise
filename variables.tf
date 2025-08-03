@@ -82,6 +82,99 @@ variable "development_vpc_cidr" {
   }
 }
 
+# Main VPC Advanced Configuration
+variable "main_vpc_enable_dns_hostnames" {
+  description = "Enable DNS hostnames in the main VPC"
+  type        = bool
+  default     = true
+}
+
+variable "main_vpc_enable_dns_support" {
+  description = "Enable DNS support in the main VPC"
+  type        = bool
+  default     = true
+}
+
+variable "main_vpc_assign_generated_ipv6_cidr_block" {
+  description = "Assign generated IPv6 CIDR block to the main VPC"
+  type        = bool
+  default     = false
+}
+
+variable "main_vpc_ipv6_cidr_block" {
+  description = "IPv6 CIDR block for the main VPC"
+  type        = string
+  default     = null
+}
+
+variable "main_vpc_ipv6_cidr_block_network_border_group" {
+  description = "IPv6 CIDR block network border group for the main VPC"
+  type        = string
+  default     = null
+}
+
+# Production VPC Advanced Configuration
+variable "production_vpc_enable_dns_hostnames" {
+  description = "Enable DNS hostnames in the production VPC"
+  type        = bool
+  default     = true
+}
+
+variable "production_vpc_enable_dns_support" {
+  description = "Enable DNS support in the production VPC"
+  type        = bool
+  default     = true
+}
+
+variable "production_vpc_assign_generated_ipv6_cidr_block" {
+  description = "Assign generated IPv6 CIDR block to the production VPC"
+  type        = bool
+  default     = false
+}
+
+variable "production_vpc_ipv6_cidr_block" {
+  description = "IPv6 CIDR block for the production VPC"
+  type        = string
+  default     = null
+}
+
+variable "production_vpc_ipv6_cidr_block_network_border_group" {
+  description = "IPv6 CIDR block network border group for the production VPC"
+  type        = string
+  default     = null
+}
+
+# Development VPC Advanced Configuration
+variable "development_vpc_enable_dns_hostnames" {
+  description = "Enable DNS hostnames in the development VPC"
+  type        = bool
+  default     = true
+}
+
+variable "development_vpc_enable_dns_support" {
+  description = "Enable DNS support in the development VPC"
+  type        = bool
+  default     = true
+}
+
+variable "development_vpc_assign_generated_ipv6_cidr_block" {
+  description = "Assign generated IPv6 CIDR block to the development VPC"
+  type        = bool
+  default     = false
+}
+
+variable "development_vpc_ipv6_cidr_block" {
+  description = "IPv6 CIDR block for the development VPC"
+  type        = string
+  default     = null
+}
+
+variable "development_vpc_ipv6_cidr_block_network_border_group" {
+  description = "IPv6 CIDR block network border group for the development VPC"
+  type        = string
+  default     = null
+}
+
 # =============================================================================
 # Subnet Configuration Variables
 # =============================================================================
@@ -102,7 +195,7 @@ variable "main_public_subnets" {
 variable "main_private_subnets" {
   description = "List of private subnet CIDR blocks for main VPC"
   type        = list(string)
-  default     = ["10.0.11.0/24", "10.0.12.0/24", "10.0.13.0/24"]
+  default     = ["10.0.10.0/24", "10.0.11.0/24", "10.0.12.0/24"]
 
   validation {
     condition = alltrue([
@@ -128,7 +221,7 @@ variable "production_public_subnets" {
 variable "production_private_subnets" {
   description = "List of private subnet CIDR blocks for production VPC"
   type        = list(string)
-  default     = ["10.1.11.0/24", "10.1.12.0/24", "10.1.13.0/24"]
+  default     = ["10.1.10.0/24", "10.1.11.0/24", "10.1.12.0/24"]
 
   validation {
     condition = alltrue([
@@ -154,7 +247,7 @@ variable "development_public_subnets" {
 variable "development_private_subnets" {
   description = "List of private subnet CIDR blocks for development VPC"
   type        = list(string)
-  default     = ["10.2.11.0/24", "10.2.12.0/24", "10.2.13.0/24"]
+  default     = ["10.2.10.0/24", "10.2.11.0/24", "10.2.12.0/24"]
 
   validation {
     condition = alltrue([
@@ -162,6 +255,117 @@ variable "development_private_subnets" {
     ])
     error_message = "All development private subnet CIDR blocks must be valid CIDR notation."
   }
+}
+
+# Main VPC Subnet Advanced Configuration
+variable "main_public_subnet_map_public_ip_on_launch" {
+  description = "Map public IP on launch for main VPC public subnets"
+  type        = bool
+  default     = true
+}
+
+variable "main_public_subnet_assign_ipv6_address_on_creation" {
+  description = "Assign IPv6 address on creation for main VPC public subnets"
+  type        = bool
+  default     = false
+}
+
+variable "main_public_subnet_ipv6_cidr_blocks" {
+  description = "IPv6 CIDR blocks for main VPC public subnets"
+  type        = list(string)
+  default     = null
+}
+
+variable "main_private_subnet_map_public_ip_on_launch" {
+  description = "Map public IP on launch for main VPC private subnets"
+  type        = bool
+  default     = false
+}
+
+variable "main_private_subnet_assign_ipv6_address_on_creation" {
+  description = "Assign IPv6 address on creation for main VPC private subnets"
+  type        = bool
+  default     = false
+}
+
+variable "main_private_subnet_ipv6_cidr_blocks" {
+  description = "IPv6 CIDR blocks for main VPC private subnets"
+  type        = list(string)
+  default     = null
+}
+
+# Production VPC Subnet Advanced Configuration
+variable "production_public_subnet_map_public_ip_on_launch" {
+  description = "Map public IP on launch for production VPC public subnets"
+  type        = bool
+  default     = true
+}
+
+variable "production_public_subnet_assign_ipv6_address_on_creation" {
+  description = "Assign IPv6 address on creation for production VPC public subnets"
+  type        = bool
+  default     = false
+}
+
+variable "production_public_subnet_ipv6_cidr_blocks" {
+  description = "IPv6 CIDR blocks for production VPC public subnets"
+  type        = list(string)
+  default     = null
+}
+
+variable "production_private_subnet_map_public_ip_on_launch" {
+  description = "Map public IP on launch for production VPC private subnets"
+  type        = bool
+  default     = false
+}
+
+variable "production_private_subnet_assign_ipv6_address_on_creation" {
+  description = "Assign IPv6 address on creation for production VPC private subnets"
+  type        = bool
+  default     = false
+}
+
+variable "production_private_subnet_ipv6_cidr_blocks" {
+  description = "IPv6 CIDR blocks for production VPC private subnets"
+  type        = list(string)
+  default     = null
+}
+
+# Development VPC Subnet Advanced Configuration
+variable "development_public_subnet_map_public_ip_on_launch" {
+  description = "Map public IP on launch for development VPC public subnets"
+  type        = bool
+  default     = true
+}
+
+variable "development_public_subnet_assign_ipv6_address_on_creation" {
+  description = "Assign IPv6 address on creation for development VPC public subnets"
+  type        = bool
+  default     = false
+}
+
+variable "development_public_subnet_ipv6_cidr_blocks" {
+  description = "IPv6 CIDR blocks for development VPC public subnets"
+  type        = list(string)
+  default     = null
+}
+
+variable "development_private_subnet_map_public_ip_on_launch" {
+  description = "Map public IP on launch for development VPC private subnets"
+  type        = bool
+  default     = false
+}
+
+variable "development_private_subnet_assign_ipv6_address_on_creation" {
+  description = "Assign IPv6 address on creation for development VPC private subnets"
+  type        = bool
+  default     = false
+}
+
+variable "development_private_subnet_ipv6_cidr_blocks" {
+  description = "IPv6 CIDR blocks for development VPC private subnets"
+  type        = list(string)
+  default     = null
 }
 
 # =============================================================================
@@ -182,6 +386,103 @@ variable "create_transit_gateway" {
   description = "Whether to create Transit Gateway for VPC connectivity"
   type        = bool
   default     = true
+}
+
+# Transit Gateway Advanced Configuration
+variable "transit_gateway_default_route_table_association" {
+  description = "Enable default route table association for Transit Gateway"
+  type        = string
+  default     = "enable"
+  validation {
+    condition     = contains(["enable", "disable"], var.transit_gateway_default_route_table_association)
+    error_message = "Transit Gateway default route table association must be either 'enable' or 'disable'."
+  }
+}
+
+variable "transit_gateway_default_route_table_propagation" {
+  description = "Enable default route table propagation for Transit Gateway"
+  type        = string
+  default     = "enable"
+  validation {
+    condition     = contains(["enable", "disable"], var.transit_gateway_default_route_table_propagation)
+    error_message = "Transit Gateway default route table propagation must be either 'enable' or 'disable'."
+  }
+}
+
+variable "transit_gateway_auto_accept_shared_attachments" {
+  description = "Auto-accept shared attachments for Transit Gateway"
+  type        = string
+  default     = "enable"
+  validation {
+    condition     = contains(["enable", "disable"], var.transit_gateway_auto_accept_shared_attachments)
+    error_message = "Transit Gateway auto-accept shared attachments must be either 'enable' or 'disable'."
+  }
+}
+
+variable "transit_gateway_asn" {
+  description = "Amazon side ASN for Transit Gateway"
+  type        = number
+  default     = 64512
+}
+
+variable "transit_gateway_dns_support" {
+  description = "Enable DNS support for Transit Gateway"
+  type        = string
+  default     = "enable"
+  validation {
+    condition     = contains(["enable", "disable"], var.transit_gateway_dns_support)
+    error_message = "Transit Gateway DNS support must be either 'enable' or 'disable'."
+  }
+}
+
+variable "transit_gateway_vpn_ecmp_support" {
+  description = "Enable VPN ECMP support for Transit Gateway"
+  type        = string
+  default     = "enable"
+  validation {
+    condition     = contains(["enable", "disable"], var.transit_gateway_vpn_ecmp_support)
+    error_message = "Transit Gateway VPN ECMP support must be either 'enable' or 'disable'."
+  }
+}
+
+variable "transit_gateway_multicast_support" {
+  description = "Enable multicast support for Transit Gateway"
+  type        = string
+  default     = "disable"
+  validation {
+    condition     = contains(["enable", "disable"], var.transit_gateway_multicast_support)
+    error_message = "Transit Gateway multicast support must be either 'enable' or 'disable'."
+  }
+}
+
+variable "transit_gateway_appliance_mode_support" {
+  description = "Enable appliance mode support for Transit Gateway VPC attachments"
+  type        = string
+  default     = "disable"
+  validation {
+    condition     = contains(["enable", "disable"], var.transit_gateway_appliance_mode_support)
+    error_message = "Transit Gateway appliance mode support must be either 'enable' or 'disable'."
+  }
+}
+
+variable "transit_gateway_attachment_dns_support" {
+  description = "Enable DNS support for Transit Gateway VPC attachments"
+  type        = string
+  default     = "enable"
+  validation {
+    condition     = contains(["enable", "disable"], var.transit_gateway_attachment_dns_support)
+    error_message = "Transit Gateway attachment DNS support must be either 'enable' or 'disable'."
+  }
+}
+
+variable "transit_gateway_attachment_ipv6_support" {
+  description = "Enable IPv6 support for Transit Gateway VPC attachments"
+  type        = string
+  default     = "disable"
+  validation {
+    condition     = contains(["enable", "disable"], var.transit_gateway_attachment_ipv6_support)
+    error_message = "Transit Gateway attachment IPv6 support must be either 'enable' or 'disable'."
+  }
 }
 
 # =============================================================================

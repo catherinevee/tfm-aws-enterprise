@@ -7,7 +7,7 @@
 # =============================================================================
 
 data "aws_availability_zones" "available" {
-  state = "available"
+  state = "available"  # Default: available - Only show available AZs
 }
 
 data "aws_caller_identity" "current" {}
@@ -22,9 +22,12 @@ data "aws_region" "current" {}
 resource "aws_vpc" "main" {
   count = var.create_main_vpc ? 1 : 0
 
-  cidr_block           = var.main_vpc_cidr
-  enable_dns_hostnames = true
-  enable_dns_support   = true
+  cidr_block           = var.main_vpc_cidr  # Default: 10.0.0.0/16 - Main VPC CIDR block
+  enable_dns_hostnames = var.main_vpc_enable_dns_hostnames  # Default: true - Enable DNS hostnames for instances
+  enable_dns_support   = var.main_vpc_enable_dns_support    # Default: true - Enable DNS support for the VPC
+  assign_generated_ipv6_cidr_block = var.main_vpc_assign_generated_ipv6_cidr_block  # Default: false - Assign IPv6 CIDR block
+  ipv6_cidr_block      = var.main_vpc_ipv6_cidr_block      # Default: null - Custom IPv6 CIDR block
+  ipv6_cidr_block_network_border_group = var.main_vpc_ipv6_cidr_block_network_border_group  # Default: null - Network border group for IPv6
 
   tags = merge(
     var.common_tags,
@@ -39,9 +42,12 @@ resource "aws_vpc" "main" {
 resource "aws_vpc" "production" {
   count = var.create_production_vpc ? 1 : 0
 
-  cidr_block           = var.production_vpc_cidr
-  enable_dns_hostnames = true
-  enable_dns_support   = true
+  cidr_block           = var.production_vpc_cidr  # Default: 10.1.0.0/16 - Production VPC CIDR block
+  enable_dns_hostnames = var.production_vpc_enable_dns_hostnames  # Default: true - Enable DNS hostnames for instances
+  enable_dns_support   = var.production_vpc_enable_dns_support    # Default: true - Enable DNS support for the VPC
+  assign_generated_ipv6_cidr_block = var.production_vpc_assign_generated_ipv6_cidr_block  # Default: false - Assign IPv6 CIDR block
+  ipv6_cidr_block      = var.production_vpc_ipv6_cidr_block      # Default: null - Custom IPv6 CIDR block
+  ipv6_cidr_block_network_border_group = var.production_vpc_ipv6_cidr_block_network_border_group  # Default: null - Network border group for IPv6
 
   tags = merge(
     var.common_tags,
@@ -56,9 +62,12 @@ resource "aws_vpc" "production" {
 resource "aws_vpc" "development" {
   count = var.create_development_vpc ? 1 : 0
 
-  cidr_block           = var.development_vpc_cidr
-  enable_dns_hostnames = true
-  enable_dns_support   = true
+  cidr_block           = var.development_vpc_cidr  # Default: 10.2.0.0/16 - Development VPC CIDR block
+  enable_dns_hostnames = var.development_vpc_enable_dns_hostnames  # Default: true - Enable DNS hostnames for instances
+  enable_dns_support   = var.development_vpc_enable_dns_support    # Default: true - Enable DNS support for the VPC
+  assign_generated_ipv6_cidr_block = var.development_vpc_assign_generated_ipv6_cidr_block  # Default: false - Assign IPv6 CIDR block
+  ipv6_cidr_block      = var.development_vpc_ipv6_cidr_block      # Default: null - Custom IPv6 CIDR block
+  ipv6_cidr_block_network_border_group = var.development_vpc_ipv6_cidr_block_network_border_group  # Default: null - Network border group for IPv6
 
   tags = merge(
     var.common_tags,
@@ -121,9 +130,11 @@ resource "aws_subnet" "main_public" {
   count = var.create_main_vpc ? length(var.main_public_subnets) : 0
 
   vpc_id                  = aws_vpc.main[0].id
-  cidr_block              = var.main_public_subnets[count.index]
+  cidr_block              = var.main_public_subnets[count.index]  # Default: ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"] - Public subnet CIDRs
   availability_zone       = data.aws_availability_zones.available.names[count.index]
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = var.main_public_subnet_map_public_ip_on_launch  # Default: true - Auto-assign public IPs
+  assign_ipv6_address_on_creation = var.main_public_subnet_assign_ipv6_address_on_creation  # Default: false - Auto-assign IPv6 addresses
+  ipv6_cidr_block = var.main_public_subnet_ipv6_cidr_blocks != null ? var.main_public_subnet_ipv6_cidr_blocks[count.index] : null  # Default: null - IPv6 CIDR block
 
   tags = merge(
     var.common_tags,
@@ -138,8 +149,11 @@ resource "aws_subnet" "main_private" {
   count = var.create_main_vpc ? length(var.main_private_subnets) : 0
 
   vpc_id            = aws_vpc.main[0].id
-  cidr_block        = var.main_private_subnets[count.index]
+  cidr_block        = var.main_private_subnets[count.index]  # Default: ["10.0.10.0/24", "10.0.11.0/24", "10.0.12.0/24"] - Private subnet CIDRs
   availability_zone = data.aws_availability_zones.available.names[count.index]
+  map_public_ip_on_launch = var.main_private_subnet_map_public_ip_on_launch  # Default: false - Don't auto-assign public IPs
+  assign_ipv6_address_on_creation = var.main_private_subnet_assign_ipv6_address_on_creation  # Default: false - Auto-assign IPv6 addresses
+  ipv6_cidr_block = var.main_private_subnet_ipv6_cidr_blocks != null ? var.main_private_subnet_ipv6_cidr_blocks[count.index] : null  # Default: null - IPv6 CIDR block
 
   tags = merge(
     var.common_tags,
@@ -155,9 +169,11 @@ resource "aws_subnet" "production_public" {
   count = var.create_production_vpc ? length(var.production_public_subnets) : 0
 
   vpc_id                  = aws_vpc.production[0].id
-  cidr_block              = var.production_public_subnets[count.index]
+  cidr_block              = var.production_public_subnets[count.index]  # Default: ["10.1.1.0/24", "10.1.2.0/24", "10.1.3.0/24"] - Public subnet CIDRs
   availability_zone       = data.aws_availability_zones.available.names[count.index]
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = var.production_public_subnet_map_public_ip_on_launch  # Default: true - Auto-assign public IPs
+  assign_ipv6_address_on_creation = var.production_public_subnet_assign_ipv6_address_on_creation  # Default: false - Auto-assign IPv6 addresses
+  ipv6_cidr_block = var.production_public_subnet_ipv6_cidr_blocks != null ? var.production_public_subnet_ipv6_cidr_blocks[count.index] : null  # Default: null - IPv6 CIDR block
 
   tags = merge(
     var.common_tags,
@@ -172,8 +188,11 @@ resource "aws_subnet" "production_private" {
   count = var.create_production_vpc ? length(var.production_private_subnets) : 0
 
   vpc_id            = aws_vpc.production[0].id
-  cidr_block        = var.production_private_subnets[count.index]
+  cidr_block        = var.production_private_subnets[count.index]  # Default: ["10.1.10.0/24", "10.1.11.0/24", "10.1.12.0/24"] - Private subnet CIDRs
   availability_zone = data.aws_availability_zones.available.names[count.index]
+  map_public_ip_on_launch = var.production_private_subnet_map_public_ip_on_launch  # Default: false - Don't auto-assign public IPs
+  assign_ipv6_address_on_creation = var.production_private_subnet_assign_ipv6_address_on_creation  # Default: false - Auto-assign IPv6 addresses
+  ipv6_cidr_block = var.production_private_subnet_ipv6_cidr_blocks != null ? var.production_private_subnet_ipv6_cidr_blocks[count.index] : null  # Default: null - IPv6 CIDR block
 
   tags = merge(
     var.common_tags,
@@ -189,9 +208,11 @@ resource "aws_subnet" "development_public" {
   count = var.create_development_vpc ? length(var.development_public_subnets) : 0
 
   vpc_id                  = aws_vpc.development[0].id
-  cidr_block              = var.development_public_subnets[count.index]
+  cidr_block              = var.development_public_subnets[count.index]  # Default: ["10.2.1.0/24", "10.2.2.0/24", "10.2.3.0/24"] - Public subnet CIDRs
   availability_zone       = data.aws_availability_zones.available.names[count.index]
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = var.development_public_subnet_map_public_ip_on_launch  # Default: true - Auto-assign public IPs
+  assign_ipv6_address_on_creation = var.development_public_subnet_assign_ipv6_address_on_creation  # Default: false - Auto-assign IPv6 addresses
+  ipv6_cidr_block = var.development_public_subnet_ipv6_cidr_blocks != null ? var.development_public_subnet_ipv6_cidr_blocks[count.index] : null  # Default: null - IPv6 CIDR block
 
   tags = merge(
     var.common_tags,
@@ -206,8 +227,11 @@ resource "aws_subnet" "development_private" {
   count = var.create_development_vpc ? length(var.development_private_subnets) : 0
 
   vpc_id            = aws_vpc.development[0].id
-  cidr_block        = var.development_private_subnets[count.index]
+  cidr_block        = var.development_private_subnets[count.index]  # Default: ["10.2.10.0/24", "10.2.11.0/24", "10.2.12.0/24"] - Private subnet CIDRs
   availability_zone = data.aws_availability_zones.available.names[count.index]
+  map_public_ip_on_launch = var.development_private_subnet_map_public_ip_on_launch  # Default: false - Don't auto-assign public IPs
+  assign_ipv6_address_on_creation = var.development_private_subnet_assign_ipv6_address_on_creation  # Default: false - Auto-assign IPv6 addresses
+  ipv6_cidr_block = var.development_private_subnet_ipv6_cidr_blocks != null ? var.development_private_subnet_ipv6_cidr_blocks[count.index] : null  # Default: null - IPv6 CIDR block
 
   tags = merge(
     var.common_tags,
@@ -226,7 +250,7 @@ resource "aws_subnet" "development_private" {
 resource "aws_eip" "main_nat" {
   count = var.create_main_vpc && var.enable_nat_gateway ? length(var.main_public_subnets) : 0
 
-  domain = "vpc"
+  domain = "vpc"  # Default: vpc - EIP domain type
 
   tags = merge(
     var.common_tags,
@@ -239,7 +263,7 @@ resource "aws_eip" "main_nat" {
 resource "aws_eip" "production_nat" {
   count = var.create_production_vpc && var.enable_nat_gateway ? length(var.production_public_subnets) : 0
 
-  domain = "vpc"
+  domain = "vpc"  # Default: vpc - EIP domain type
 
   tags = merge(
     var.common_tags,
@@ -252,7 +276,7 @@ resource "aws_eip" "production_nat" {
 resource "aws_eip" "development_nat" {
   count = var.create_development_vpc && var.enable_nat_gateway ? length(var.development_public_subnets) : 0
 
-  domain = "vpc"
+  domain = "vpc"  # Default: vpc - EIP domain type
 
   tags = merge(
     var.common_tags,
@@ -267,7 +291,7 @@ resource "aws_nat_gateway" "main" {
   count = var.create_main_vpc && var.enable_nat_gateway ? length(var.main_public_subnets) : 0
 
   allocation_id = aws_eip.main_nat[count.index].id
-  subnet_id     = aws_subnet.main_public[count.index].id
+  subnet_id     = aws_subnet.main_public[count.index].id  # Default: Public subnet - NAT Gateway placement
 
   tags = merge(
     var.common_tags,
@@ -283,7 +307,7 @@ resource "aws_nat_gateway" "production" {
   count = var.create_production_vpc && var.enable_nat_gateway ? length(var.production_public_subnets) : 0
 
   allocation_id = aws_eip.production_nat[count.index].id
-  subnet_id     = aws_subnet.production_public[count.index].id
+  subnet_id     = aws_subnet.production_public[count.index].id  # Default: Public subnet - NAT Gateway placement
 
   tags = merge(
     var.common_tags,
@@ -299,7 +323,7 @@ resource "aws_nat_gateway" "development" {
   count = var.create_development_vpc && var.enable_nat_gateway ? length(var.development_public_subnets) : 0
 
   allocation_id = aws_eip.development_nat[count.index].id
-  subnet_id     = aws_subnet.development_public[count.index].id
+  subnet_id     = aws_subnet.development_public[count.index].id  # Default: Public subnet - NAT Gateway placement
 
   tags = merge(
     var.common_tags,
@@ -492,9 +516,13 @@ resource "aws_ec2_transit_gateway" "main" {
   count = var.create_transit_gateway ? 1 : 0
 
   description                     = "Transit Gateway for ${var.environment}"
-  default_route_table_association = "enable"
-  default_route_table_propagation = "enable"
-  auto_accept_shared_attachments  = "enable"
+  default_route_table_association = var.transit_gateway_default_route_table_association  # Default: enable - Enable default route table association
+  default_route_table_propagation = var.transit_gateway_default_route_table_propagation  # Default: enable - Enable default route table propagation
+  auto_accept_shared_attachments  = var.transit_gateway_auto_accept_shared_attachments  # Default: enable - Auto-accept shared attachments
+  amazon_side_asn                 = var.transit_gateway_asn  # Default: 64512 - Amazon side ASN
+  dns_support                     = var.transit_gateway_dns_support  # Default: enable - Enable DNS support
+  vpn_ecmp_support                = var.transit_gateway_vpn_ecmp_support  # Default: enable - Enable VPN ECMP support
+  multicast_support               = var.transit_gateway_multicast_support  # Default: disable - Enable multicast support
 
   tags = merge(
     var.common_tags,
@@ -522,9 +550,12 @@ resource "aws_ec2_transit_gateway_route_table" "main" {
 resource "aws_ec2_transit_gateway_vpc_attachment" "main" {
   count = var.create_transit_gateway && var.create_main_vpc ? 1 : 0
 
-  subnet_ids         = aws_subnet.main_private[*].id
+  subnet_ids         = aws_subnet.main_private[*].id  # Default: Private subnets - TGW attachment placement
   transit_gateway_id = aws_ec2_transit_gateway.main[0].id
   vpc_id             = aws_vpc.main[0].id
+  appliance_mode_support = var.transit_gateway_appliance_mode_support  # Default: disable - Enable appliance mode support
+  dns_support = var.transit_gateway_attachment_dns_support  # Default: enable - Enable DNS support for attachments
+  ipv6_support = var.transit_gateway_attachment_ipv6_support  # Default: disable - Enable IPv6 support for attachments
 
   tags = merge(
     var.common_tags,
@@ -537,9 +568,12 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "main" {
 resource "aws_ec2_transit_gateway_vpc_attachment" "production" {
   count = var.create_transit_gateway && var.create_production_vpc ? 1 : 0
 
-  subnet_ids         = aws_subnet.production_private[*].id
+  subnet_ids         = aws_subnet.production_private[*].id  # Default: Private subnets - TGW attachment placement
   transit_gateway_id = aws_ec2_transit_gateway.main[0].id
   vpc_id             = aws_vpc.production[0].id
+  appliance_mode_support = var.transit_gateway_appliance_mode_support  # Default: disable - Enable appliance mode support
+  dns_support = var.transit_gateway_attachment_dns_support  # Default: enable - Enable DNS support for attachments
+  ipv6_support = var.transit_gateway_attachment_ipv6_support  # Default: disable - Enable IPv6 support for attachments
 
   tags = merge(
     var.common_tags,
@@ -552,9 +586,12 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "production" {
 resource "aws_ec2_transit_gateway_vpc_attachment" "development" {
   count = var.create_transit_gateway && var.create_development_vpc ? 1 : 0
 
-  subnet_ids         = aws_subnet.development_private[*].id
+  subnet_ids         = aws_subnet.development_private[*].id  # Default: Private subnets - TGW attachment placement
   transit_gateway_id = aws_ec2_transit_gateway.main[0].id
   vpc_id             = aws_vpc.development[0].id
+  appliance_mode_support = var.transit_gateway_appliance_mode_support  # Default: disable - Enable appliance mode support
+  dns_support = var.transit_gateway_attachment_dns_support  # Default: enable - Enable DNS support for attachments
+  ipv6_support = var.transit_gateway_attachment_ipv6_support  # Default: disable - Enable IPv6 support for attachments
 
   tags = merge(
     var.common_tags,
