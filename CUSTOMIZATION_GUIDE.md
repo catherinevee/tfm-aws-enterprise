@@ -2,7 +2,7 @@
 
 This guide provides comprehensive documentation for customizing the AWS Enterprise Multi-VPC Infrastructure Terraform module. Each section includes detailed explanations of variables, their default values, and practical examples.
 
-## 📋 Table of Contents
+## Table of Contents
 
 1. [Basic Configuration](#basic-configuration)
 2. [VPC Configuration](#vpc-configuration)
@@ -18,7 +18,7 @@ This guide provides comprehensive documentation for customizing the AWS Enterpri
 12. [Best Practices](#best-practices)
 13. [Troubleshooting](#troubleshooting)
 
-## 🔧 Basic Configuration
+## Basic Configuration
 
 ### Environment and Project Settings
 
@@ -41,7 +41,7 @@ common_tags = {
 - `environment` (string, default: "dev"): Environment name used for resource naming
 - `common_tags` (map(string), default: {}): Common tags applied to all resources
 
-## 🏗️ VPC Configuration
+## VPC Configuration
 
 ### VPC Creation Control
 
@@ -113,7 +113,7 @@ development_vpc_ipv6_cidr_block = null                 # Default: null - Custom 
 development_vpc_ipv6_cidr_block_network_border_group = null  # Default: null - Network border group for IPv6
 ```
 
-## 🌐 Subnet Configuration
+## Subnet Configuration
 
 ### Subnet CIDR Blocks
 
@@ -142,7 +142,7 @@ main_public_subnet_assign_ipv6_address_on_creation = false  # Default: false - A
 main_public_subnet_ipv6_cidr_blocks = null             # Default: null - IPv6 CIDR blocks for public subnets
 
 # Main VPC Private Subnet Settings
-main_private_subnet_map_public_ip_on_launch = false    # Default: false - Don't auto-assign public IPs to private subnets
+main_private_subnet_map_public_ip_on_launch = false    # Default: false - Do not auto-assign public IPs to private subnets
 main_private_subnet_assign_ipv6_address_on_creation = false # Default: false - Auto-assign IPv6 addresses
 main_private_subnet_ipv6_cidr_blocks = null            # Default: null - IPv6 CIDR blocks for private subnets
 ```
@@ -156,7 +156,7 @@ production_public_subnet_assign_ipv6_address_on_creation = false  # Default: fal
 production_public_subnet_ipv6_cidr_blocks = null             # Default: null - IPv6 CIDR blocks for public subnets
 
 # Production VPC Private Subnet Settings
-production_private_subnet_map_public_ip_on_launch = false    # Default: false - Don't auto-assign public IPs to private subnets
+production_private_subnet_map_public_ip_on_launch = false    # Default: false - Do not auto-assign public IPs to private subnets
 production_private_subnet_assign_ipv6_address_on_creation = false # Default: false - Auto-assign IPv6 addresses
 production_private_subnet_ipv6_cidr_blocks = null            # Default: null - IPv6 CIDR blocks for private subnets
 ```
@@ -170,12 +170,12 @@ development_public_subnet_assign_ipv6_address_on_creation = false  # Default: fa
 development_public_subnet_ipv6_cidr_blocks = null             # Default: null - IPv6 CIDR blocks for public subnets
 
 # Development VPC Private Subnet Settings
-development_private_subnet_map_public_ip_on_launch = false    # Default: false - Don't auto-assign public IPs to private subnets
+development_private_subnet_map_public_ip_on_launch = false    # Default: false - Do not auto-assign public IPs to private subnets
 development_private_subnet_assign_ipv6_address_on_creation = false # Default: false - Auto-assign IPv6 addresses
 development_private_subnet_ipv6_cidr_blocks = null            # Default: null - IPv6 CIDR blocks for private subnets
 ```
 
-## 🌉 NAT Gateway Configuration
+## NAT Gateway Configuration
 
 ### NAT Gateway Settings
 
@@ -192,7 +192,7 @@ enable_nat_gateway = true  # Default: true - Enable NAT Gateway for private subn
 - Each NAT Gateway requires an Elastic IP address
 - NAT Gateways incur hourly charges and data processing fees
 
-## 🚀 Transit Gateway Configuration
+## Transit Gateway Configuration
 
 ### Basic Transit Gateway Settings
 
@@ -240,7 +240,7 @@ transit_gateway_attachment_ipv6_support = "disable"         # Default: disable -
 - `transit_gateway_attachment_dns_support` (string, default: "enable"): Enable DNS support for VPC attachments
 - `transit_gateway_attachment_ipv6_support` (string, default: "disable"): Enable IPv6 support for VPC attachments
 
-## 🔐 VPN Configuration
+## VPN Configuration
 
 ### Basic VPN Settings
 
@@ -266,7 +266,7 @@ vpn_static_routes_only = true     # Default: true - Use static routes only for V
 - `customer_gateway_ip` (string, default: ""): IP address of the customer gateway
 - `vpn_static_routes_only` (bool, default: true): Whether to use static routes only for VPN
 
-## ⚖️ Load Balancer Configuration
+## Load Balancer Configuration
 
 ### Basic Load Balancer Settings
 
@@ -302,7 +302,7 @@ alb_health_check_path = "/health" # Default: /health - Health check path for ALB
 - `nlb_target_port` (number, default: 80): Target port for NLB
 - `alb_health_check_path` (string, default: "/health"): Health check path for ALB
 
-## 🔗 VPC Endpoints Configuration
+## VPC Endpoints Configuration
 
 ### VPC Endpoints Settings
 
@@ -321,7 +321,7 @@ create_vpc_endpoints = false  # Default: false - Create VPC endpoints
 - ECR Interface Endpoint
 - ECR DKR Interface Endpoint
 
-## 🛡️ Security Configuration
+## Security Configuration
 
 ### Security Groups
 
@@ -337,7 +337,7 @@ The module automatically creates security groups for:
 - Ingress: HTTPS (443) from VPC CIDR
 - Egress: All traffic to anywhere
 
-## 🏷️ Tagging Strategy
+## Tagging Strategy
 
 ### Recommended Tagging
 
@@ -354,7 +354,7 @@ common_tags = {
 }
 ```
 
-## 📝 Usage Examples
+## Usage Examples
 
 ### Minimal Configuration
 
@@ -469,7 +469,7 @@ module "enterprise_infrastructure" {
 }
 ```
 
-## ✅ Best Practices
+## Best Practices
 
 ### 1. CIDR Planning
 - Use non-overlapping CIDR blocks for each VPC
@@ -500,7 +500,7 @@ module "enterprise_infrastructure" {
 - Use AWS Config for compliance monitoring
 - Set up proper alerting for critical resources
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -514,7 +514,7 @@ module "enterprise_infrastructure" {
 
 #### 3. Transit Gateway Limits
 **Problem:** Hitting Transit Gateway attachment limits
-**Solution:** Plan VPC architecture carefully and consider VPC peering for simple connectivity
+**Solution:** Plan VPC architecture carefully and consider VPC peering for direct connectivity
 
 #### 4. VPN Connection Issues
 **Problem:** VPN connection not establishing

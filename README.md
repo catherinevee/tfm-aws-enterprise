@@ -2,7 +2,7 @@
 
 A comprehensive Terraform module for deploying enterprise-grade multi-VPC AWS infrastructure with Transit Gateway connectivity, VPN connections, load balancers, and VPC endpoints.
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 This module provides a complete enterprise infrastructure solution including:
 
@@ -65,52 +65,52 @@ graph TB
     FL --> IAM[IAM Roles]
 ```
 
-## 🚀 Features
+## Implementation Features
 
 ### Multi-VPC Architecture
-- ✅ Separate VPCs for main, production, and development environments
-- ✅ Configurable CIDR blocks for each VPC
-- ✅ Advanced DNS and IPv6 support for each VPC
-- ✅ Flexible subnet configurations with public/private subnets
+- Separate VPCs for main, production, and development environments
+- Configurable CIDR blocks for each VPC
+- Advanced DNS and IPv6 support for each VPC
+- Flexible subnet configurations with public/private subnets
 
 ### Transit Gateway Connectivity
-- ✅ Centralized Transit Gateway for VPC connectivity
-- ✅ Configurable route table association and propagation
-- ✅ Advanced features: DNS support, VPN ECMP, multicast support
-- ✅ Appliance mode and IPv6 support for VPC attachments
+- Centralized Transit Gateway for VPC connectivity
+- Configurable route table association and propagation
+- Advanced features: DNS support, VPN ECMP, multicast support
+- Appliance mode and IPv6 support for VPC attachments
 
 ### VPN Connectivity
-- ✅ Site-to-Site VPN connections
-- ✅ Configurable BGP ASN and static routes
-- ✅ Customer gateway management
+- Site-to-Site VPN connections
+- Configurable BGP ASN and static routes
+- Customer gateway management
 
 ### Load Balancing
-- ✅ Application Load Balancer (ALB) with health checks
-- ✅ Network Load Balancer (NLB) for TCP/UDP traffic
-- ✅ Configurable internal/external load balancers
-- ✅ Deletion protection and target group settings
+- Application Load Balancer (ALB) with health checks
+- Network Load Balancer (NLB) for TCP/UDP traffic
+- Configurable internal/external load balancers
+- Deletion protection and target group settings
 
 ### VPC Endpoints
-- ✅ S3 and DynamoDB Gateway endpoints
-- ✅ EC2, ECR, and ECR DKR Interface endpoints
-- ✅ Private DNS and security group management
+- S3 and DynamoDB Gateway endpoints
+- EC2, ECR, and ECR DKR Interface endpoints
+- Private DNS and security group management
 
 ### Advanced Networking
-- ✅ IPv6 support for VPCs and subnets
-- ✅ Custom DNS hostnames and support settings
-- ✅ Flexible public IP assignment policies
-- ✅ NAT Gateway configuration per VPC
+- IPv6 support for VPCs and subnets
+- Custom DNS hostnames and support settings
+- Flexible public IP assignment policies
+- NAT Gateway configuration per VPC
 
-## 📋 Prerequisites
+## Prerequisites
 
 - Terraform >= 1.0
 - AWS Provider >= 5.0
 - AWS CLI configured with appropriate permissions
 - For VPN: Customer gateway IP address and BGP ASN
 
-## 🔧 Usage
+## Implementation Guide
 
-### Basic Usage
+### Standard Configuration
 
 ```hcl
 module "enterprise_infrastructure" {
@@ -148,7 +148,7 @@ module "enterprise_infrastructure" {
 }
 ```
 
-### Advanced Configuration
+### Enterprise Configuration
 
 This module provides extensive customization options for all resources. Here are some key configuration areas:
 
@@ -168,7 +168,7 @@ main_vpc_ipv6_cidr_block_network_border_group = null   # Network border group fo
 main_public_subnet_map_public_ip_on_launch = true       # Auto-assign public IPs to public subnets
 main_public_subnet_assign_ipv6_address_on_creation = false  # Auto-assign IPv6 addresses
 main_public_subnet_ipv6_cidr_blocks = null             # IPv6 CIDR blocks for public subnets
-main_private_subnet_map_public_ip_on_launch = false    # Don't auto-assign public IPs to private subnets
+main_private_subnet_map_public_ip_on_launch = false    # Do not auto-assign public IPs to private subnets
 main_private_subnet_assign_ipv6_address_on_creation = false # Auto-assign IPv6 addresses
 main_private_subnet_ipv6_cidr_blocks = null            # IPv6 CIDR blocks for private subnets
 ```
@@ -208,7 +208,7 @@ customer_gateway_ip = "203.0.113.1"                      # IP address of the cus
 vpn_static_routes_only = true                            # Use static routes only for VPN
 ```
 
-## 📖 Inputs
+## Input Variables
 
 ### General Variables
 | Name | Description | Type | Default | Required |
@@ -301,7 +301,7 @@ vpn_static_routes_only = true                            # Use static routes onl
 |------|-------------|------|---------|:--------:|
 | enable_nat_gateway | Whether to enable NAT Gateway for private subnets | `bool` | `true` | no |
 
-## 📤 Outputs
+## Output Variables
 
 | Name | Description |
 |------|-------------|
@@ -326,26 +326,26 @@ vpn_static_routes_only = true                            # Use static routes onl
 | nlb_dns_name | DNS name of the Network Load Balancer |
 | vpc_summary | Summary of VPCs created |
 
-## 🔧 Examples
+## Implementation Examples
 
-### Basic Example
+### Standard Configuration Example
 See the [basic example](./examples/basic/) for a minimal configuration with essential features enabled.
 
-### Advanced Example
+### Enterprise Configuration Example
 See the [advanced example](./examples/advanced/) for a comprehensive configuration with all features enabled.
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
-3. Make your changes
+3. Implement your changes
 4. Add tests if applicable
 5. Submit a pull request
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Support
+## Support
 
 For support and questions, please open an issue in the GitHub repository.
